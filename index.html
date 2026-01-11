@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevBurger | Sistema de Pedidos Profissional</title>
+    <title>DevBurger | Portfólio Premium</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 </head>
@@ -21,51 +21,50 @@
 
     <section class="hero">
         <div class="hero-content">
-            <h1>O Hambúrguer que você <span>Respeita</span></h1>
-            <p>Peça agora e receba em casa com toda comodidade.</p>
-            <a href="#cardapio" class="btn-principal">Fazer Pedido</a>
+            <h1>Sabor que vem do <span>Coração</span></h1>
+            <p>Hambúrgueres artesanais com ingredientes selecionados e entrega rápida.</p>
+            <a href="#cardapio" class="btn-principal">Ver Cardápio</a>
         </div>
     </section>
 
     <section class="features">
         <div class="feature-item">
             <i class="fa-solid fa-motorcycle"></i>
-            <h4>Entrega Grátis</h4>
-            <p>Em pedidos acima de R$ 50</p>
+            <h4>Entrega Veloz</h4>
+            <p>Seu pedido quente em 30 min.</p>
         </div>
         <div class="feature-item">
-            <i class="fa-solid fa-leaf"></i>
-            <h4>100% Artesanal</h4>
-            <p>Ingredientes frescos</p>
+            <i class="fa-solid fa-utensils"></i>
+            <h4>Carne Premium</h4>
+            <p>Blend de angus 100% fresco.</p>
         </div>
         <div class="feature-item">
-            <i class="fa-solid fa-clock"></i>
-            <h4>30 Minutos</h4>
-            <p>Sua fome não espera</p>
+            <i class="fa-solid fa-shield-check"></i>
+            <h4>Seguro e Fácil</h4>
+            <p>Pedido direto pelo site.</p>
         </div>
     </section>
 
     <main id="cardapio" class="container">
-        <h2 class="title-section">Cardápio Especial</h2>
-        
+        <h2 class="title-section">Nossos Favoritos</h2>
         <div class="products-grid">
             <div class="card">
                 <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" alt="Burger">
                 <div class="card-info">
-                    <h3>Master Bacon</h3>
-                    <p>Blend 200g, bacon crocante e cheddar.</p>
-                    <span class="price">R$ 35.00</span>
-                    <button class="add-to-cart" onclick="addToCart('Master Bacon', 35.00)">Adicionar ao Carrinho</button>
+                    <h3>Master Bacon Cheese</h3>
+                    <p>Pão brioche, carne 200g, bacon crocante e muito cheddar.</p>
+                    <span class="price">R$ 42.00</span>
+                    <button class="add-to-cart" onclick="addToCart('Master Bacon Cheese', 42.00)">Adicionar ao Carrinho</button>
                 </div>
             </div>
 
             <div class="card">
                 <img src="https://images.unsplash.com/photo-1550317144-b38c5f6032d1?w=500" alt="Burger">
                 <div class="card-info">
-                    <h3>Chicken Crispy</h3>
-                    <p>Frango empanado, alface e maionese.</p>
-                    <span class="price">R$ 28.00</span>
-                    <button class="add-to-cart" onclick="addToCart('Chicken Crispy', 28.00)">Adicionar ao Carrinho</button>
+                    <h3>Chicken Crispy Especial</h3>
+                    <p>Frango empanado crocante, alface americana e maionese grill.</p>
+                    <span class="price">R$ 35.00</span>
+                    <button class="add-to-cart" onclick="addToCart('Chicken Crispy Especial', 35.00)">Adicionar ao Carrinho</button>
                 </div>
             </div>
         </div>
@@ -76,14 +75,13 @@
             <h3>Seu Pedido</h3>
             <span onclick="toggleCart()" class="close-cart">&times;</span>
         </div>
-        <div id="cart-items" class="cart-items-list">
-            </div>
+        <div id="cart-items" class="cart-items-list"></div>
         <div class="cart-footer">
             <div class="total-box">
                 <span>Total:</span>
                 <span id="cart-total">R$ 0.00</span>
             </div>
-            <button class="btn-checkout" onclick="checkout()">Finalizar no WhatsApp</button>
+            <button class="btn-checkout" onclick="checkout()">Finalizar Pedido</button>
         </div>
     </div>
 
@@ -98,30 +96,23 @@
         function addToCart(name, price) {
             cart.push({ name, price });
             updateCart();
-            // Feedback visual rápido
-            if(!document.getElementById('cart-sidebar').classList.contains('active')){
-                toggleCart();
-            }
+            if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
         }
 
         function updateCart() {
             const cartItemsElement = document.getElementById('cart-items');
             const cartCountElement = document.getElementById('cart-count');
             const cartTotalElement = document.getElementById('cart-total');
-            
             cartItemsElement.innerHTML = '';
             total = 0;
-
             cart.forEach((item, index) => {
                 total += item.price;
                 cartItemsElement.innerHTML += `
                     <div class="cart-item">
                         <p>${item.name} - R$ ${item.price.toFixed(2)}</p>
                         <button onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i></button>
-                    </div>
-                `;
+                    </div>`;
             });
-
             cartCountElement.innerText = cart.length;
             cartTotalElement.innerText = `R$ ${total.toFixed(2)}`;
         }
@@ -132,15 +123,15 @@
         }
 
         function checkout() {
-            if (cart.length === 0) return alert("Seu carrinho está vazio!");
+            if (cart.length === 0) return alert("O carrinho está vazio!");
+            let resumo = cart.map(i => `${i.name}`).join(', ');
             
-            const fone = "00000000000"; // Campo configurável para o número do cliente
-            let pedido = "Olá! Gostaria de fazer um pedido:\n\n";
-            cart.forEach(item => pedido += `- ${item.name}: R$ ${item.price.toFixed(2)}\n`);
-            pedido += `\n*Total: R$ ${total.toFixed(2)}*`;
-            pedido += `\n\n_Desejo pagar via Pix._`;
-
-            window.open(`https://wa.me/${fone}?text=${encodeURIComponent(pedido)}`, '_blank');
+            // MODO PORTFÓLIO: Sem números de telefone para evitar banimento no Workana
+            alert(`🚀 PEDIDO SIMULADO COM SUCESSO!\n\nItens: ${resumo}\nTotal: R$ ${total.toFixed(2)}\n\nNo projeto final, esses dados são enviados formatados para o WhatsApp do restaurante.`);
+            
+            cart = [];
+            updateCart();
+            toggleCart();
         }
     </script>
 </body>
