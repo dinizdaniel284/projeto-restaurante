@@ -33,7 +33,7 @@
 
 ### 🔗 Demonstração Online
 Visualize o projeto em tempo real: 
-👉 **[CLIQUE AQUI PARA VER O PROJETO](LINK_DA_VERCEL_AQUI)**
+👉 **[CLIQUE AQUI PARA VER O PROJETO](https://devburger-premium.vercel.app)**
 
 ---
 
