@@ -3,9 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevBurger | Portfólio Premium</title>
+    <title>DevBurger | Sistema de Pedidos Online</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        /* Pequeno ajuste para o botão de checkout não ficar escondido */
+        .cart-footer { padding: 20px; border-top: 1px solid #ddd; }
+        .btn-checkout { 
+            width: 100%; 
+            padding: 15px; 
+            background: #25d366; 
+            color: white; 
+            border: none; 
+            border-radius: 8px; 
+            font-weight: bold; 
+            cursor: pointer;
+            font-size: 1.1rem;
+        }
+    </style>
 </head>
 <body>
 
@@ -41,7 +56,7 @@
         <div class="feature-item">
             <i class="fa-solid fa-shield-check"></i>
             <h4>Seguro e Fácil</h4>
-            <p>Pedido direto pelo site.</p>
+            <p>Pedido direto pelo WhatsApp.</p>
         </div>
     </section>
 
@@ -77,11 +92,13 @@
         </div>
         <div id="cart-items" class="cart-items-list"></div>
         <div class="cart-footer">
-            <div class="total-box">
+            <div class="total-box" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold;">
                 <span>Total:</span>
                 <span id="cart-total">R$ 0.00</span>
             </div>
-            <button class="btn-checkout" onclick="checkout()">Finalizar Pedido</button>
+            <button class="btn-checkout" onclick="checkout()">
+                <i class="fa-brands fa-whatsapp"></i> Finalizar via WhatsApp
+            </button>
         </div>
     </div>
 
@@ -105,12 +122,18 @@
             const cartTotalElement = document.getElementById('cart-total');
             cartItemsElement.innerHTML = '';
             total = 0;
+
             cart.forEach((item, index) => {
                 total += item.price;
                 cartItemsElement.innerHTML += `
-                    <div class="cart-item">
-                        <p>${item.name} - R$ ${item.price.toFixed(2)}</p>
-                        <button onclick="removeItem(${index})"><i class="fa-solid fa-trash"></i></button>
+                    <div class="cart-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
+                        <div>
+                            <p style="margin: 0; font-weight: bold;">${item.name}</p>
+                            <p style="margin: 0; font-size: 0.9rem; color: #666;">R$ ${item.price.toFixed(2)}</p>
+                        </div>
+                        <button onclick="removeItem(${index})" style="background: none; border: none; color: #ff4d4d; cursor: pointer;">
+                            <i class="fa-solid fa-trash"></i>
+                        </button>
                     </div>`;
             });
             cartCountElement.innerText = cart.length;
@@ -123,15 +146,49 @@
         }
 
         function checkout() {
-            if (cart.length === 0) return alert("O carrinho está vazio!");
-            let resumo = cart.map(i => `${i.name}`).join(', ');
+            if (cart.length === 0) return alert("O seu carrinho está vazio!");
+
+            // Solicita o endereço do cliente
+            const endereco = prompt("Por favor, informe seu endereço de entrega (Rua, Número, Bairro):");
             
-            // MODO PORTFÓLIO: Sem números de telefone para evitar banimento no Workana
-            alert(`🚀 PEDIDO SIMULADO COM SUCESSO!\n\nItens: ${resumo}\nTotal: R$ ${total.toFixed(2)}\n\nNo projeto final, esses dados são enviados formatados para o WhatsApp do restaurante.`);
-            
+            if (!endereco || endereco.trim() === "") {
+                return alert("Precisamos do seu endereço para realizar a entrega!");
+            }
+
+            // --- CONFIGURAÇÃO DO DONO ---
+            const foneDono = "5511999999999"; // COLOQUE O SEU NÚMERO AQUI (Com código do país e DDD)
+
+            // Agrupar itens repetidos para a mensagem ficar organizada
+            const resumoItens = {};
+            cart.forEach(item => {
+                resumoItens[item.name] = (resumoItens[item.name] || 0) + 1;
+            });
+
+            let textoItens = "";
+            for (const item in resumoItens) {
+                textoItens += `*${resumoItens[item]}x* ${item}\n`;
+            }
+
+            // Montagem da mensagem para o WhatsApp
+            const mensagemBase = 
+                `🍔 *NOVO PEDIDO - DevBurger*\n` +
+                `--------------------------------\n\n` +
+                `${textoItens}\n` +
+                `--------------------------------\n` +
+                `💰 *Total:* R$ ${total.toFixed(2)}\n\n` +
+                `📍 *Endereço:* ${endereco}\n\n` +
+                `✅ *Aguardando confirmação!*`;
+
+            const linkWhatsapp = `https://wa.me/${foneDono}?text=${encodeURIComponent(mensagemBase)}`;
+
+            // Abre o WhatsApp
+            window.open(linkWhatsapp, '_blank');
+
+            // Limpa o carrinho
             cart = [];
             updateCart();
             toggleCart();
+            alert("Pedido enviado para o WhatsApp do restaurante!");
         }
     </script>
 </body>
