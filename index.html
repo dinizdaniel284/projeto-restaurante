@@ -34,25 +34,34 @@
         /* Grid e Cards */
         .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; display: none; } /* Escondido por padrão */
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; display: none; }
         .card.show { display: flex; flex-direction: column; }
         .card img { width: 100%; height: 200px; object-fit: cover; }
         .card-info { padding: 20px; flex-grow: 1; }
         
-        /* Estilo VIP */
         .card.vip-item { border: 2px solid var(--vip); }
         .vip-badge { background: var(--vip); color: white; padding: 3px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; display: inline-block; }
 
         .price { font-size: 1.3rem; font-weight: bold; color: #2ecc71; margin: 10px 0; display: block; }
         .btn-add { width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
+        /* Localização Section */
+        .location-section { background: var(--dark); color: white; padding: 60px 20px; margin-top: 50px; }
+        .location-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; align-items: center; }
+        .location-text { flex: 1; min-width: 300px; }
+        .location-text h2 { color: var(--primary); font-size: 2rem; margin-bottom: 20px; }
+        .location-text p { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
+        .btn-maps { display: inline-block; margin-top: 15px; background: var(--primary); color: black; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+
+        .map-placeholder { flex: 1; min-width: 300px; height: 300px; border-radius: 15px; overflow: hidden; }
+        .map-placeholder img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+
         /* Sidebar Cart */
         .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: white; z-index: 2000; transition: 0.4s; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .cart-sidebar.active { right: 0; }
         .cart-header { padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between; }
         
-        /* Responsividade */
-        @media (max-width: 768px) { .cart-sidebar { width: 100%; right: -100%; } .hero h1 { font-size: 1.8rem; } }
+        @media (max-width: 768px) { .cart-sidebar { width: 100%; right: -100%; } }
     </style>
 </head>
 <body>
@@ -88,7 +97,6 @@
 
     <main class="container">
         <div class="products-grid" id="menu-grid">
-            
             <div class="card lanches show">
                 <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500">
                 <div class="card-info">
@@ -103,7 +111,7 @@
                 <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500">
                 <div class="card-info">
                     <h3>Executivo de Picanha</h3>
-                    <p>Picanha fatiada, arroz, feijão, fritas e farofa.</p>
+                    <p>Picanha fatiada, arroz, feijão e fritas.</p>
                     <span class="price">R$ 55.00</span>
                     <button class="btn-add" onclick="addToCart('Executivo de Picanha', 55.00)">Adicionar</button>
                 </div>
@@ -113,7 +121,7 @@
                 <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500">
                 <div class="card-info">
                     <h3>Fettuccine Alfredo</h3>
-                    <p>Massa artesanal ao molho branco e parmesão premium.</p>
+                    <p>Massa artesanal ao molho branco.</p>
                     <span class="price">R$ 48.00</span>
                     <button class="btn-add" onclick="addToCart('Fettuccine Alfredo', 48.00)">Adicionar</button>
                 </div>
@@ -124,14 +132,28 @@
                 <div class="card-info">
                     <span class="vip-badge">EXCLUSIVO VIP</span>
                     <h3>Wagyu Gold Steak</h3>
-                    <p>Corte japonês A5 com manteiga de trufas negras.</p>
+                    <p>Corte japonês A5 trufado.</p>
                     <span class="price">R$ 240.00</span>
                     <button class="btn-add" style="background: var(--vip);" onclick="addToCart('Wagyu Gold Steak', 240.00)">Adicionar ao Pedido</button>
                 </div>
             </div>
-
         </div>
     </main>
+
+    <section class="location-section" id="contato">
+        <div class="location-content">
+            <div class="location-text">
+                <h2>Venha nos Visitar</h2>
+                <p><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Av. Principal da Gastronomia, 450 - Centro</p>
+                <p><i class="fa-solid fa-clock" style="color: var(--primary);"></i> Terça a Domingo: 18h às 23:30h</p>
+                <p><i class="fa-solid fa-motorcycle" style="color: var(--primary);"></i> Entrega rápida em toda a região!</p>
+                <a href="https://maps.google.com" target="_blank" class="btn-maps">Ver no Google Maps</a>
+            </div>
+            <div class="map-placeholder">
+                <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800" alt="Mapa">
+            </div>
+        </div>
+    </section>
 
     <div id="cart-sidebar" class="cart-sidebar">
         <div class="cart-header">
@@ -161,21 +183,12 @@
         let cart = [];
         
         function filterMenu(category, btn) {
-            // Atualiza botões
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             btn.classList.add('active');
-
-            // Filtra itens
             const cards = document.querySelectorAll('.card');
             cards.forEach(card => {
-                if(card.classList.contains(category)) {
-                    card.classList.add('show');
-                } else {
-                    card.classList.remove('show');
-                }
+                card.classList.contains(category) ? card.classList.add('show') : card.classList.remove('show');
             });
-
-            // Atualiza título do Hero
             const titles = { lanches: 'Lanches', almoco: 'Almoço', jantar: 'Jantar', vip: 'Área VIP' };
             document.getElementById('hero-title').innerHTML = `Cardápio de <span>${titles[category]}</span>`;
         }
@@ -205,9 +218,11 @@
 
         function checkout() {
             if(cart.length === 0) return alert("Carrinho vazio!");
-            const msg = encodeURIComponent(`🍔 *NOVO PEDIDO*\nTotal: ${document.getElementById('cart-total').innerText}\n\nPedido via: https://devburger-premium.vercel.app/`);
+            const linkSite = "https://devburger-premium.vercel.app/";
+            const msg = encodeURIComponent(`🍔 *NOVO PEDIDO*\nTotal: ${document.getElementById('cart-total').innerText}\n\n💻 Pedido via: ${linkSite}`);
             window.open(`https://wa.me/5511999999999?text=${msg}`);
         }
     </script>
 </body>
-</html>
+    </html>
+            
