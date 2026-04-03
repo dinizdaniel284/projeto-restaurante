@@ -3,101 +3,161 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevBurger | Sistema de Pedidos Online</title>
+    <title>DevBurger | Premium Delivery</title>
     <link rel="stylesheet" href="style.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        /* Pequeno ajuste para o botão de checkout não ficar escondido */
-        .cart-footer { padding: 20px; border-top: 1px solid #ddd; }
-        .btn-checkout { 
-            width: 100%; 
-            padding: 15px; 
-            background: #25d366; 
-            color: white; 
-            border: none; 
-            border-radius: 8px; 
-            font-weight: bold; 
-            cursor: pointer;
-            font-size: 1.1rem;
-        }
+        :root { --primary: #ffc107; --dark: #1a1a1a; --success: #25d366; }
+        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; }
+        
+        /* Login e Admin Styles */
+        .admin-section { display: none; padding: 40px; background: white; min-height: 100vh; }
+        .login-overlay { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
+        .login-card { background: white; padding: 30px; border-radius: 12px; width: 300px; text-align: center; }
+        .login-card input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;}
+        
+        /* Grid Adjustments */
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s; }
+        .card:hover { transform: translateY(-5px); }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-info { padding: 15px; }
+        .category-title { margin: 40px 20px 10px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        
+        /* Nav Admin Button */
+        .btn-admin-access { background: none; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 15px; font-size: 0.8rem; }
+        
+        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
+        .stat-box { background: var(--primary); padding: 20px; border-radius: 10px; color: #000; font-weight: bold; }
     </style>
 </head>
 <body>
 
-    <nav class="navbar">
-        <div class="nav-content">
-            <div class="logo">Dev<span>Burger</span></div>
-            <div class="cart-btn" onclick="toggleCart()">
-                <i class="fa-solid fa-cart-shopping"></i>
-                <span id="cart-count">0</span>
+    <div id="main-ui">
+        <nav class="navbar" style="background: var(--dark); color: white; padding: 15px 0; position: sticky; top:0; z-index: 1000;">
+            <div class="nav-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
+                <div class="logo" style="font-size: 1.5rem; font-weight: bold;">Dev<span style="color: var(--primary);">Burger</span></div>
+                <div>
+                    <button class="btn-admin-access" onclick="openLogin()">ADM Access</button>
+                    <div class="cart-btn" onclick="toggleCart()" style="display: inline-block; cursor: pointer; position: relative;">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span id="cart-count" style="position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem;">0</span>
+                    </div>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <section class="hero">
-        <div class="hero-content">
-            <h1>Sabor que vem do <span>Coração</span></h1>
-            <p>Hambúrgueres artesanais com ingredientes selecionados e entrega rápida.</p>
-            <a href="#cardapio" class="btn-principal">Ver Cardápio</a>
-        </div>
-    </section>
+        <section class="hero" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200'); height: 400px; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+            <div class="hero-content">
+                <h1 style="font-size: 3rem; margin-bottom: 10px;">Sabor que vem do <span style="color: var(--primary);">Coração</span></h1>
+                <p>O melhor hambúrguer artesanal da região, pronto em minutos.</p>
+            </div>
+        </section>
 
-    <section class="features">
-        <div class="feature-item">
-            <i class="fa-solid fa-motorcycle"></i>
-            <h4>Entrega Veloz</h4>
-            <p>Seu pedido quente em 30 min.</p>
-        </div>
-        <div class="feature-item">
-            <i class="fa-solid fa-utensils"></i>
-            <h4>Carne Premium</h4>
-            <p>Blend de angus 100% fresco.</p>
-        </div>
-        <div class="feature-item">
-            <i class="fa-solid fa-shield-check"></i>
-            <h4>Seguro e Fácil</h4>
-            <p>Pedido direto pelo WhatsApp.</p>
-        </div>
-    </section>
-
-    <main id="cardapio" class="container">
-        <h2 class="title-section">Nossos Favoritos</h2>
-        <div class="products-grid">
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" alt="Burger">
-                <div class="card-info">
-                    <h3>Master Bacon Cheese</h3>
-                    <p>Pão brioche, carne 200g, bacon crocante e muito cheddar.</p>
-                    <span class="price">R$ 42.00</span>
-                    <button class="add-to-cart" onclick="addToCart('Master Bacon Cheese', 42.00)">Adicionar ao Carrinho</button>
+        <main id="cardapio" class="container" style="max-width: 1200px; margin: 0 auto;">
+            
+            <h2 class="category-title">Burgers Artesanais</h2>
+            <div class="products-grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" alt="Burger">
+                    <div class="card-info">
+                        <h3>Master Bacon Cheese</h3>
+                        <p>Pão brioche, carne 200g, bacon crocante e muito cheddar.</p>
+                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 42.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Master Bacon Cheese', 42.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                    </div>
+                </div>
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500" alt="Burger">
+                    <div class="card-info">
+                        <h3>Duplo Smash BBQ</h3>
+                        <p>Duas carnes smash, cebola caramelizada e molho BBQ da casa.</p>
+                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 38.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Duplo Smash BBQ', 38.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="card">
-                <img src="https://images.unsplash.com/photo-1550317144-b38c5f6032d1?w=500" alt="Burger">
-                <div class="card-info">
-                    <h3>Chicken Crispy Especial</h3>
-                    <p>Frango empanado crocante, alface americana e maionese grill.</p>
-                    <span class="price">R$ 35.00</span>
-                    <button class="add-to-cart" onclick="addToCart('Chicken Crispy Especial', 35.00)">Adicionar ao Carrinho</button>
+            <h2 class="category-title">Acompanhamentos</h2>
+            <div class="products-grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1573082893975-349884149666?w=500" alt="Batata">
+                    <div class="card-info">
+                        <h3>Batata Rústica</h3>
+                        <p>Batatas cortadas à mão com alecrim e páprica defumada.</p>
+                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 22.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Batata Rústica', 22.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                    </div>
                 </div>
             </div>
-        </div>
-    </main>
 
-    <div id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
+            <h2 class="category-title">Bebidas Geladas</h2>
+            <div class="products-grid">
+                <div class="card">
+                    <img src="https://images.unsplash.com/photo-1596515297327-4c28bb32144e?w=500" alt="Soda">
+                    <div class="card-info">
+                        <h3>Coca-Cola Lata</h3>
+                        <p>Original ou Zero (350ml).</p>
+                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 7.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Coca-Cola Lata', 7.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="admin-ui" class="admin-section">
+        <div style="display: flex; justify-content: space-between; align-items: center;">
+            <h1>Dashboard Administrativo</h1>
+            <button onclick="logout()" style="padding: 10px 20px; background: red; color: white; border: none; border-radius: 5px;">Sair</button>
+        </div>
+        <hr>
+        <div class="stats-grid">
+            <div class="stat-box">Vendas Hoje: <br> <span style="font-size: 2rem;">R$ 1.250,00</span></div>
+            <div class="stat-box">Pedidos Ativos: <br> <span style="font-size: 2rem;">12</span></div>
+            <div class="stat-box">Ticket Médio: <br> <span style="font-size: 2rem;">R$ 55,00</span></div>
+        </div>
+        <h3>Últimos Pedidos Recebidos</h3>
+        <table style="width:100%; border-collapse: collapse; background: #eee;">
+            <tr style="background: #ddd;">
+                <th style="padding: 10px; border: 1px solid #ccc;">Pedido #</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Cliente</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Valor</th>
+                <th style="padding: 10px; border: 1px solid #ccc;">Status</th>
+            </tr>
+            <tr>
+                <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">#4502</td>
+                <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">João Silva</td>
+                <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">R$ 84,00</td>
+                <td style="padding: 10px; border: 1px solid #ccc; text-align: center; color: orange;">Em Preparo</td>
+            </tr>
+        </table>
+    </div>
+
+    <div id="login-overlay" class="login-overlay">
+        <div class="login-card">
+            <h3>Área Restrita</h3>
+            <p>Acesse o painel do dono</p>
+            <input type="text" id="user" placeholder="Usuário (admin)">
+            <input type="password" id="pass" placeholder="Senha (admin)">
+            <button onclick="handleLogin()" style="width: 100%; padding: 10px; background: var(--primary); border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Entrar</button>
+            <p onclick="closeLogin()" style="font-size: 0.8rem; margin-top: 10px; cursor: pointer; color: #666;">Cancelar</p>
+        </div>
+    </div>
+
+    <div id="cart-sidebar" class="cart-sidebar" style="position: fixed; right: -400px; top: 0; width: 350px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: 0.4s; z-index: 1500; display: flex; flex-direction: column;">
+        <div class="cart-header" style="padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between;">
             <h3>Seu Pedido</h3>
-            <span onclick="toggleCart()" class="close-cart">&times;</span>
+            <span onclick="toggleCart()" style="cursor: pointer; font-size: 1.5rem;">&times;</span>
         </div>
-        <div id="cart-items" class="cart-items-list"></div>
+        <div id="cart-items" style="flex: 1; overflow-y: auto; padding: 20px;"></div>
         <div class="cart-footer">
-            <div class="total-box" style="display: flex; justify-content: space-between; margin-bottom: 15px; font-weight: bold;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px;">
                 <span>Total:</span>
                 <span id="cart-total">R$ 0.00</span>
             </div>
-            <button class="btn-checkout" onclick="checkout()">
-                <i class="fa-brands fa-whatsapp"></i> Finalizar via WhatsApp
+            <button class="btn-checkout" onclick="checkout()" style="width:100%; padding: 15px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
+                <i class="fa-brands fa-whatsapp"></i> Finalizar no WhatsApp
             </button>
         </div>
     </div>
@@ -107,13 +167,14 @@
         let total = 0;
 
         function toggleCart() {
-            document.getElementById('cart-sidebar').classList.toggle('active');
+            const sidebar = document.getElementById('cart-sidebar');
+            sidebar.style.right = sidebar.style.right === '0px' ? '-400px' : '0px';
         }
 
         function addToCart(name, price) {
             cart.push({ name, price });
             updateCart();
-            if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
+            document.getElementById('cart-sidebar').style.right = '0px';
         }
 
         function updateCart() {
@@ -126,69 +187,45 @@
             cart.forEach((item, index) => {
                 total += item.price;
                 cartItemsElement.innerHTML += `
-                    <div class="cart-item" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; padding: 10px; background: #f9f9f9; border-radius: 5px;">
-                        <div>
-                            <p style="margin: 0; font-weight: bold;">${item.name}</p>
-                            <p style="margin: 0; font-size: 0.9rem; color: #666;">R$ ${item.price.toFixed(2)}</p>
-                        </div>
-                        <button onclick="removeItem(${index})" style="background: none; border: none; color: #ff4d4d; cursor: pointer;">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
+                        <span>${item.name}</span>
+                        <span>R$ ${item.price.toFixed(2)}</span>
                     </div>`;
             });
             cartCountElement.innerText = cart.length;
             cartTotalElement.innerText = `R$ ${total.toFixed(2)}`;
         }
 
-        function removeItem(index) {
-            cart.splice(index, 1);
-            updateCart();
+        // FUNÇÕES DE ADMINISTRAÇÃO
+        function openLogin() { document.getElementById('login-overlay').style.display = 'flex'; }
+        function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; }
+
+        function handleLogin() {
+            const user = document.getElementById('user').value;
+            const pass = document.getElementById('pass').value;
+
+            if(user === 'admin' && pass === 'admin') {
+                document.getElementById('main-ui').style.display = 'none';
+                document.getElementById('admin-ui').style.display = 'block';
+                closeLogin();
+            } else {
+                alert("Login incorreto!");
+            }
+        }
+
+        function logout() {
+            document.getElementById('main-ui').style.display = 'block';
+            document.getElementById('admin-ui').style.display = 'none';
         }
 
         function checkout() {
-            if (cart.length === 0) return alert("O seu carrinho está vazio!");
-
-            // Solicita o endereço do cliente
-            const endereco = prompt("Por favor, informe seu endereço de entrega (Rua, Número, Bairro):");
+            if (cart.length === 0) return alert("Carrinho vazio!");
+            const endereco = prompt("Endereço de entrega:");
+            if (!endereco) return;
             
-            if (!endereco || endereco.trim() === "") {
-                return alert("Precisamos do seu endereço para realizar a entrega!");
-            }
-
-            // --- CONFIGURAÇÃO DO DONO ---
-            const foneDono = "5511999999999"; // COLOQUE O SEU NÚMERO AQUI (Com código do país e DDD)
-
-            // Agrupar itens repetidos para a mensagem ficar organizada
-            const resumoItens = {};
-            cart.forEach(item => {
-                resumoItens[item.name] = (resumoItens[item.name] || 0) + 1;
-            });
-
-            let textoItens = "";
-            for (const item in resumoItens) {
-                textoItens += `*${resumoItens[item]}x* ${item}\n`;
-            }
-
-            // Montagem da mensagem para o WhatsApp
-            const mensagemBase = 
-                `🍔 *NOVO PEDIDO - DevBurger*\n` +
-                `--------------------------------\n\n` +
-                `${textoItens}\n` +
-                `--------------------------------\n` +
-                `💰 *Total:* R$ ${total.toFixed(2)}\n\n` +
-                `📍 *Endereço:* ${endereco}\n\n` +
-                `✅ *Aguardando confirmação!*`;
-
-            const linkWhatsapp = `https://wa.me/${foneDono}?text=${encodeURIComponent(mensagemBase)}`;
-
-            // Abre o WhatsApp
-            window.open(linkWhatsapp, '_blank');
-
-            // Limpa o carrinho
-            cart = [];
-            updateCart();
-            toggleCart();
-            alert("Pedido enviado para o WhatsApp do restaurante!");
+            const resumo = cart.map(i => `*${i.name}*`).join('\n');
+            const msg = `🍔 *NOVO PEDIDO*\n\n${resumo}\n\n*Total:* R$ ${total.toFixed(2)}\n*Endereço:* ${endereco}`;
+            window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(msg)}`);
         }
     </script>
 </body>
