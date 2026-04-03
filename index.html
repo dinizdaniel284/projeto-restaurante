@@ -3,77 +3,127 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevBurger | Premium Delivery</title>
-    <link rel="stylesheet" href="style.css">
+    <title>DevBurger | Sistema de Pedidos Online</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ffc107; --dark: #1a1a1a; --success: #25d366; }
-        body { font-family: 'Segoe UI', sans-serif; background: #f4f4f4; margin: 0; }
+        :root { --primary: #ffc107; --dark: #121212; --success: #25d366; --gray: #f4f4f4; }
         
-        /* Login e Admin Styles */
-        .admin-section { display: none; padding: 40px; background: white; min-height: 100vh; }
-        .login-overlay { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 2000; justify-content: center; align-items: center; }
-        .login-card { background: white; padding: 30px; border-radius: 12px; width: 300px; text-align: center; }
-        .login-card input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 5px; box-sizing: border-box;}
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        body { background-color: var(--gray); color: #333; scroll-behavior: smooth; }
+
+        /* Navbar */
+        .navbar { background: var(--dark); color: white; padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
+        .logo { font-size: 1.6rem; font-weight: bold; }
+        .logo span { color: var(--primary); }
         
-        /* Grid Adjustments */
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 20px; padding: 20px; }
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1); transition: 0.3s; }
-        .card:hover { transform: translateY(-5px); }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-info { padding: 15px; }
-        .category-title { margin: 40px 20px 10px; border-left: 5px solid var(--primary); padding-left: 15px; }
+        .nav-actions { display: flex; align-items: center; gap: 20px; }
+        .btn-admin-access { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.3s; }
+        .btn-admin-access:hover { background: var(--primary); color: black; }
         
-        /* Nav Admin Button */
-        .btn-admin-access { background: none; border: 1px solid white; color: white; padding: 5px 15px; border-radius: 20px; cursor: pointer; margin-right: 15px; font-size: 0.8rem; }
+        .cart-btn { cursor: pointer; position: relative; font-size: 1.4rem; }
+        #cart-count { position: absolute; top: -8px; right: -10px; background: #ff4d4d; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; }
+
+        /* Hero Section */
+        .hero { height: 450px; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200&q=80'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; padding: 0 20px; }
+        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
+        .hero h1 span { color: var(--primary); }
+        .hero p { font-size: 1.2rem; opacity: 0.9; }
+
+        /* Container & Cards */
+        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
+        .category-title { margin: 40px 0 20px; border-left: 5px solid var(--primary); padding-left: 15px; font-size: 1.8rem; }
         
-        .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 30px; }
-        .stat-box { background: var(--primary); padding: 20px; border-radius: 10px; color: #000; font-weight: bold; }
+        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: 0.3s; display: flex; flex-direction: column; }
+        .card:hover { transform: translateY(-8px); }
+        
+        /* Fix Imagem: Garante que preencha todo o topo */
+        .card img { width: 100%; height: 220px; object-fit: cover; display: block; }
+        
+        .card-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
+        .card-info h3 { margin-bottom: 10px; font-size: 1.3rem; }
+        .card-info p { color: #666; font-size: 0.95rem; margin-bottom: 15px; }
+        .price { font-size: 1.4rem; font-weight: bold; color: #2ecc71; display: block; margin-bottom: 15px; }
+        
+        .add-to-cart { width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
+        .add-to-cart:hover { background: #333; }
+
+        /* Localização Section */
+        .location-section { background: var(--dark); color: white; padding: 80px 20px; margin-top: 50px; }
+        .location-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 50px; align-items: center; }
+        .location-text { flex: 1; min-width: 300px; }
+        .location-text h2 { color: var(--primary); font-size: 2.2rem; margin-bottom: 25px; }
+        .location-text p { margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
+        .btn-maps { display: inline-block; margin-top: 20px; background: var(--primary); color: black; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
+        .btn-maps:hover { transform: scale(1.05); }
+        
+        .map-placeholder { flex: 1; min-width: 300px; height: 350px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        .map-placeholder img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+
+        /* Sidebar Cart */
+        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.2); transition: 0.4s; z-index: 2000; display: flex; flex-direction: column; }
+        .cart-sidebar.active { right: 0; }
+        .cart-header { padding: 25px; background: var(--dark); color: white; display: flex; justify-content: space-between; align-items: center; }
+        .close-cart { cursor: pointer; font-size: 1.8rem; }
+        .cart-items-list { flex: 1; overflow-y: auto; padding: 20px; }
+        .cart-footer { padding: 25px; border-top: 1px solid #eee; }
+        .btn-checkout { width: 100%; padding: 18px; background: var(--success); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
+
+        /* Login & Admin */
+        .login-overlay { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; }
+        .login-card { background: white; padding: 40px; border-radius: 15px; width: 350px; text-align: center; }
+        .login-card input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
+        .admin-view { display: none; padding: 40px; background: white; min-height: 100vh; }
+        
+        @media (max-width: 768px) {
+            .hero h1 { font-size: 2.2rem; }
+            .cart-sidebar { width: 100%; right: -100%; }
+        }
     </style>
 </head>
 <body>
 
     <div id="main-ui">
-        <nav class="navbar" style="background: var(--dark); color: white; padding: 15px 0; position: sticky; top:0; z-index: 1000;">
-            <div class="nav-content" style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto; padding: 0 20px;">
-                <div class="logo" style="font-size: 1.5rem; font-weight: bold;">Dev<span style="color: var(--primary);">Burger</span></div>
-                <div>
-                    <button class="btn-admin-access" onclick="openLogin()">ADM Access</button>
-                    <div class="cart-btn" onclick="toggleCart()" style="display: inline-block; cursor: pointer; position: relative;">
+        <nav class="navbar">
+            <div class="nav-content">
+                <div class="logo">Dev<span>Burger</span></div>
+                <div class="nav-actions">
+                    <button class="btn-admin-access" onclick="openLogin()">Painel ADM</button>
+                    <div class="cart-btn" onclick="toggleCart()">
                         <i class="fa-solid fa-cart-shopping"></i>
-                        <span id="cart-count" style="position: absolute; top: -10px; right: -10px; background: red; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem;">0</span>
+                        <span id="cart-count">0</span>
                     </div>
                 </div>
             </div>
         </nav>
 
-        <section class="hero" style="background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200'); height: 400px; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center;">
+        <section class="hero">
             <div class="hero-content">
-                <h1 style="font-size: 3rem; margin-bottom: 10px;">Sabor que vem do <span style="color: var(--primary);">Coração</span></h1>
-                <p>O melhor hambúrguer artesanal da região, pronto em minutos.</p>
+                <h1>Sabor que vem do <span>Coração</span></h1>
+                <p>Hambúrgueres artesanais e entrega ultra rápida.</p>
             </div>
         </section>
 
-        <main id="cardapio" class="container" style="max-width: 1200px; margin: 0 auto;">
-            
-            <h2 class="category-title">Burgers Artesanais</h2>
+        <main class="container">
+            <h2 class="category-title">Burgers Premium</h2>
             <div class="products-grid">
                 <div class="card">
-                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500" alt="Burger">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="Master Bacon">
                     <div class="card-info">
                         <h3>Master Bacon Cheese</h3>
                         <p>Pão brioche, carne 200g, bacon crocante e muito cheddar.</p>
-                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 42.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Master Bacon Cheese', 42.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                        <span class="price">R$ 42.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Master Bacon Cheese', 42.00)">Adicionar</button>
                     </div>
                 </div>
                 <div class="card">
-                    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=500" alt="Burger">
+                    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&q=80" alt="Smash">
                     <div class="card-info">
                         <h3>Duplo Smash BBQ</h3>
                         <p>Duas carnes smash, cebola caramelizada e molho BBQ da casa.</p>
-                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 38.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Duplo Smash BBQ', 38.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                        <span class="price">R$ 38.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Duplo Smash BBQ', 38.00)">Adicionar</button>
                     </div>
                 </div>
             </div>
@@ -81,83 +131,92 @@
             <h2 class="category-title">Acompanhamentos</h2>
             <div class="products-grid">
                 <div class="card">
-                    <img src="https://images.unsplash.com/photo-1573082893975-349884149666?w=500" alt="Batata">
+                    <img src="https://images.unsplash.com/photo-1630384066252-19e1ed95536a?w=600&q=80" alt="Batata">
                     <div class="card-info">
                         <h3>Batata Rústica</h3>
                         <p>Batatas cortadas à mão com alecrim e páprica defumada.</p>
-                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 22.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Batata Rústica', 22.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                        <span class="price">R$ 22.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Batata Rústica', 22.00)">Adicionar</button>
                     </div>
                 </div>
             </div>
 
-            <h2 class="category-title">Bebidas Geladas</h2>
+            <h2 class="category-title">Bebidas</h2>
             <div class="products-grid">
                 <div class="card">
-                    <img src="https://images.unsplash.com/photo-1596515297327-4c28bb32144e?w=500" alt="Soda">
+                    <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&q=80" alt="Coca">
                     <div class="card-info">
                         <h3>Coca-Cola Lata</h3>
-                        <p>Original ou Zero (350ml).</p>
-                        <span class="price" style="font-weight: bold; color: #2ecc71;">R$ 7.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Coca-Cola Lata', 7.00)" style="width:100%; margin-top:10px; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px; cursor:pointer;">Adicionar</button>
+                        <p>Geladinha, 350ml (Original ou Zero).</p>
+                        <span class="price">R$ 7.00</span>
+                        <button class="add-to-cart" onclick="addToCart('Coca-Cola Lata', 7.00)">Adicionar</button>
                     </div>
                 </div>
             </div>
         </main>
+
+        <section class="location-section" id="contato">
+            <div class="location-content">
+                <div class="location-text">
+                    <h2>Onde Estamos</h2>
+                    <p><i class="fa-solid fa-location-dot"></i> Av. Principal da Gastronomia, 450 - Centro</p>
+                    <p><i class="fa-solid fa-clock"></i> Aberto: Terça a Domingo (18:00 - 23:30)</p>
+                    <p><i class="fa-solid fa-motorcycle"></i> Entregamos em toda a cidade!</p>
+                    <a href="https://maps.google.com" target="_blank" class="btn-maps">Ver no Google Maps</a>
+                </div>
+                <div class="map-placeholder">
+                    <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800&q=80" alt="Mapa">
+                </div>
+            </div>
+        </section>
     </div>
 
-    <div id="admin-ui" class="admin-section">
-        <div style="display: flex; justify-content: space-between; align-items: center;">
+    <div id="admin-ui" class="admin-view">
+        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
             <h1>Dashboard Administrativo</h1>
-            <button onclick="logout()" style="padding: 10px 20px; background: red; color: white; border: none; border-radius: 5px;">Sair</button>
+            <button onclick="logout()" style="padding: 10px 25px; background: #ff4d4d; color: white; border: none; border-radius: 8px; cursor: pointer;">Sair do Painel</button>
         </div>
-        <hr>
-        <div class="stats-grid">
-            <div class="stat-box">Vendas Hoje: <br> <span style="font-size: 2rem;">R$ 1.250,00</span></div>
-            <div class="stat-box">Pedidos Ativos: <br> <span style="font-size: 2rem;">12</span></div>
-            <div class="stat-box">Ticket Médio: <br> <span style="font-size: 2rem;">R$ 55,00</span></div>
+        <div class="container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px;">
+            <div style="background: #e1f5fe; padding: 30px; border-radius: 15px; border-left: 8px solid #03a9f4;">
+                <p>Vendas Hoje</p>
+                <h2 style="font-size: 2rem;">R$ 1.480,00</h2>
+            </div>
+            <div style="background: #fff3e0; padding: 30px; border-radius: 15px; border-left: 8px solid #ff9800;">
+                <p>Pedidos Pendentes</p>
+                <h2 style="font-size: 2rem;">7</h2>
+            </div>
+            <div style="background: #e8f5e9; padding: 30px; border-radius: 15px; border-left: 8px solid #4caf50;">
+                <p>Ticket Médio</p>
+                <h2 style="font-size: 2rem;">R$ 58,00</h2>
+            </div>
         </div>
-        <h3>Últimos Pedidos Recebidos</h3>
-        <table style="width:100%; border-collapse: collapse; background: #eee;">
-            <tr style="background: #ddd;">
-                <th style="padding: 10px; border: 1px solid #ccc;">Pedido #</th>
-                <th style="padding: 10px; border: 1px solid #ccc;">Cliente</th>
-                <th style="padding: 10px; border: 1px solid #ccc;">Valor</th>
-                <th style="padding: 10px; border: 1px solid #ccc;">Status</th>
-            </tr>
-            <tr>
-                <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">#4502</td>
-                <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">João Silva</td>
-                <td style="padding: 10px; border: 1px solid #ccc; text-align: center;">R$ 84,00</td>
-                <td style="padding: 10px; border: 1px solid #ccc; text-align: center; color: orange;">Em Preparo</td>
-            </tr>
-        </table>
     </div>
 
     <div id="login-overlay" class="login-overlay">
         <div class="login-card">
-            <h3>Área Restrita</h3>
-            <p>Acesse o painel do dono</p>
+            <h2 style="margin-bottom: 10px;">Acesso Restrito</h2>
+            <p style="color: #666; margin-bottom: 20px;">Entre com suas credenciais</p>
             <input type="text" id="user" placeholder="Usuário (admin)">
             <input type="password" id="pass" placeholder="Senha (admin)">
-            <button onclick="handleLogin()" style="width: 100%; padding: 10px; background: var(--primary); border: none; border-radius: 5px; font-weight: bold; cursor: pointer;">Entrar</button>
-            <p onclick="closeLogin()" style="font-size: 0.8rem; margin-top: 10px; cursor: pointer; color: #666;">Cancelar</p>
+            <button onclick="handleLogin()" style="width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">Entrar</button>
+            <p onclick="closeLogin()" style="margin-top: 15px; cursor: pointer; font-size: 0.9rem; color: #999;">Voltar ao site</p>
         </div>
     </div>
 
-    <div id="cart-sidebar" class="cart-sidebar" style="position: fixed; right: -400px; top: 0; width: 350px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.1); transition: 0.4s; z-index: 1500; display: flex; flex-direction: column;">
-        <div class="cart-header" style="padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between;">
+    <div id="cart-sidebar" class="cart-sidebar">
+        <div class="cart-header">
             <h3>Seu Pedido</h3>
-            <span onclick="toggleCart()" style="cursor: pointer; font-size: 1.5rem;">&times;</span>
+            <span onclick="toggleCart()" class="close-cart">&times;</span>
         </div>
-        <div id="cart-items" style="flex: 1; overflow-y: auto; padding: 20px;"></div>
+        <div id="cart-items" class="cart-items-list">
+            </div>
         <div class="cart-footer">
-            <div style="display: flex; justify-content: space-between; font-weight: bold; margin-bottom: 10px;">
+            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px;">
                 <span>Total:</span>
                 <span id="cart-total">R$ 0.00</span>
             </div>
-            <button class="btn-checkout" onclick="checkout()" style="width:100%; padding: 15px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold;">
-                <i class="fa-brands fa-whatsapp"></i> Finalizar no WhatsApp
+            <button class="btn-checkout" onclick="checkout()">
+                <i class="fa-brands fa-whatsapp"></i> Finalizar via WhatsApp
             </button>
         </div>
     </div>
@@ -167,14 +226,13 @@
         let total = 0;
 
         function toggleCart() {
-            const sidebar = document.getElementById('cart-sidebar');
-            sidebar.style.right = sidebar.style.right === '0px' ? '-400px' : '0px';
+            document.getElementById('cart-sidebar').classList.toggle('active');
         }
 
         function addToCart(name, price) {
             cart.push({ name, price });
             updateCart();
-            document.getElementById('cart-sidebar').style.right = '0px';
+            if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
         }
 
         function updateCart() {
@@ -187,30 +245,34 @@
             cart.forEach((item, index) => {
                 total += item.price;
                 cartItemsElement.innerHTML += `
-                    <div style="display: flex; justify-content: space-between; margin-bottom: 10px; border-bottom: 1px solid #eee; padding-bottom: 5px;">
-                        <span>${item.name}</span>
-                        <span>R$ ${item.price.toFixed(2)}</span>
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
+                        <div>
+                            <p style="font-weight: bold; margin: 0;">${item.name}</p>
+                            <p style="color: #2ecc71; margin: 0;">R$ ${item.price.toFixed(2)}</p>
+                        </div>
+                        <i class="fa-solid fa-trash" onclick="removeItem(${index})" style="color: #ff4d4d; cursor: pointer;"></i>
                     </div>`;
             });
             cartCountElement.innerText = cart.length;
             cartTotalElement.innerText = `R$ ${total.toFixed(2)}`;
         }
 
-        // FUNÇÕES DE ADMINISTRAÇÃO
+        function removeItem(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
         function openLogin() { document.getElementById('login-overlay').style.display = 'flex'; }
         function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; }
 
         function handleLogin() {
-            const user = document.getElementById('user').value;
-            const pass = document.getElementById('pass').value;
-
-            if(user === 'admin' && pass === 'admin') {
+            const u = document.getElementById('user').value;
+            const p = document.getElementById('pass').value;
+            if(u === 'admin' && p === 'admin') {
                 document.getElementById('main-ui').style.display = 'none';
                 document.getElementById('admin-ui').style.display = 'block';
                 closeLogin();
-            } else {
-                alert("Login incorreto!");
-            }
+            } else { alert("Usuário ou senha inválidos!"); }
         }
 
         function logout() {
@@ -219,13 +281,18 @@
         }
 
         function checkout() {
-            if (cart.length === 0) return alert("Carrinho vazio!");
-            const endereco = prompt("Endereço de entrega:");
+            if (cart.length === 0) return alert("Seu carrinho está vazio!");
+            const endereco = prompt("Qual o endereço de entrega?");
             if (!endereco) return;
+
+            const fone = "5511999999999"; // Troque pelo seu número
+            const resumo = cart.map(item => `• ${item.name} (R$ ${item.price.toFixed(2)})`).join('\n');
+            const mensagem = encodeURIComponent(`🍔 *NOVO PEDIDO - DevBurger*\n\n${resumo}\n\n💰 *Total:* R$ ${total.toFixed(2)}\n📍 *Entrega em:* ${endereco}`);
             
-            const resumo = cart.map(i => `*${i.name}*`).join('\n');
-            const msg = `🍔 *NOVO PEDIDO*\n\n${resumo}\n\n*Total:* R$ ${total.toFixed(2)}\n*Endereço:* ${endereco}`;
-            window.open(`https://wa.me/5511999999999?text=${encodeURIComponent(msg)}`);
+            window.open(`https://wa.me/${fone}?text=${mensagem}`, '_blank');
+            cart = [];
+            updateCart();
+            toggleCart();
         }
     </script>
 </body>
