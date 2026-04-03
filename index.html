@@ -3,296 +3,210 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevBurger | Sistema de Pedidos Online</title>
+    <title>DevBurger | Premium Experience</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <style>
-        :root { --primary: #ffc107; --dark: #121212; --success: #25d366; --gray: #f4f4f4; }
+        :root { --primary: #ffc107; --dark: #121212; --success: #25d366; --gray: #f4f4f4; --vip: #d4af37; }
         
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
         body { background-color: var(--gray); color: #333; scroll-behavior: smooth; }
 
         /* Navbar */
-        .navbar { background: var(--dark); color: white; padding: 15px 0; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.3); }
+        .navbar { background: var(--dark); color: white; padding: 15px 0; position: sticky; top: 0; z-index: 1000; }
         .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .logo { font-size: 1.6rem; font-weight: bold; }
+        .logo { font-size: 1.6rem; font-weight: bold; cursor: pointer; }
         .logo span { color: var(--primary); }
         
-        .nav-actions { display: flex; align-items: center; gap: 20px; }
-        .btn-admin-access { background: transparent; border: 1px solid var(--primary); color: var(--primary); padding: 6px 15px; border-radius: 20px; cursor: pointer; font-size: 0.8rem; transition: 0.3s; }
-        .btn-admin-access:hover { background: var(--primary); color: black; }
-        
-        .cart-btn { cursor: pointer; position: relative; font-size: 1.4rem; }
-        #cart-count { position: absolute; top: -8px; right: -10px; background: #ff4d4d; color: white; border-radius: 50%; padding: 2px 6px; font-size: 0.7rem; font-weight: bold; }
+        .nav-actions { display: flex; align-items: center; gap: 15px; }
+        .btn-admin { border: 1px solid var(--primary); color: var(--primary); padding: 5px 12px; border-radius: 20px; cursor: pointer; background: transparent; font-size: 0.8rem; }
 
-        /* Hero Section */
-        .hero { height: 450px; background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200&q=80'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; padding: 0 20px; }
-        .hero h1 { font-size: 3.5rem; margin-bottom: 10px; }
-        .hero h1 span { color: var(--primary); }
-        .hero p { font-size: 1.2rem; opacity: 0.9; }
+        /* Categorias (UX iFood) */
+        .category-nav { background: white; padding: 15px 0; position: sticky; top: 60px; z-index: 999; border-bottom: 1px solid #ddd; overflow-x: auto; white-space: nowrap; }
+        .category-container { max-width: 1200px; margin: 0 auto; display: flex; gap: 10px; padding: 0 20px; }
+        .tab-btn { padding: 10px 25px; border-radius: 25px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
+        .tab-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
+        .tab-btn.vip-tab { border-color: var(--vip); color: var(--vip); }
+        .tab-btn.vip-tab.active { background: var(--vip); color: white; }
 
-        /* Container & Cards */
-        .container { max-width: 1200px; margin: 40px auto; padding: 0 20px; }
-        .category-title { margin: 40px 0 20px; border-left: 5px solid var(--primary); padding-left: 15px; font-size: 1.8rem; }
-        
+        /* Hero */
+        .hero { height: 300px; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=1200'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+
+        /* Grid e Cards */
+        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
         .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.08); transition: 0.3s; display: flex; flex-direction: column; }
-        .card:hover { transform: translateY(-8px); }
+        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; display: none; } /* Escondido por padrão */
+        .card.show { display: flex; flex-direction: column; }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-info { padding: 20px; flex-grow: 1; }
         
-        /* Fix Imagem: Garante que preencha todo o topo */
-        .card img { width: 100%; height: 220px; object-fit: cover; display: block; }
-        
-        .card-info { padding: 20px; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between; }
-        .card-info h3 { margin-bottom: 10px; font-size: 1.3rem; }
-        .card-info p { color: #666; font-size: 0.95rem; margin-bottom: 15px; }
-        .price { font-size: 1.4rem; font-weight: bold; color: #2ecc71; display: block; margin-bottom: 15px; }
-        
-        .add-to-cart { width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; transition: 0.3s; }
-        .add-to-cart:hover { background: #333; }
+        /* Estilo VIP */
+        .card.vip-item { border: 2px solid var(--vip); }
+        .vip-badge { background: var(--vip); color: white; padding: 3px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; display: inline-block; }
 
-        /* Localização Section */
-        .location-section { background: var(--dark); color: white; padding: 80px 20px; margin-top: 50px; }
-        .location-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 50px; align-items: center; }
-        .location-text { flex: 1; min-width: 300px; }
-        .location-text h2 { color: var(--primary); font-size: 2.2rem; margin-bottom: 25px; }
-        .location-text p { margin-bottom: 15px; font-size: 1.1rem; display: flex; align-items: center; gap: 10px; }
-        .btn-maps { display: inline-block; margin-top: 20px; background: var(--primary); color: black; padding: 12px 25px; border-radius: 8px; text-decoration: none; font-weight: bold; transition: 0.3s; }
-        .btn-maps:hover { transform: scale(1.05); }
-        
-        .map-placeholder { flex: 1; min-width: 300px; height: 350px; border-radius: 20px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
-        .map-placeholder img { width: 100%; height: 100%; object-fit: cover; opacity: 0.7; }
+        .price { font-size: 1.3rem; font-weight: bold; color: #2ecc71; margin: 10px 0; display: block; }
+        .btn-add { width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
 
         /* Sidebar Cart */
-        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: white; box-shadow: -5px 0 15px rgba(0,0,0,0.2); transition: 0.4s; z-index: 2000; display: flex; flex-direction: column; }
+        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: white; z-index: 2000; transition: 0.4s; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
         .cart-sidebar.active { right: 0; }
-        .cart-header { padding: 25px; background: var(--dark); color: white; display: flex; justify-content: space-between; align-items: center; }
-        .close-cart { cursor: pointer; font-size: 1.8rem; }
-        .cart-items-list { flex: 1; overflow-y: auto; padding: 20px; }
-        .cart-footer { padding: 25px; border-top: 1px solid #eee; }
-        .btn-checkout { width: 100%; padding: 18px; background: var(--success); color: white; border: none; border-radius: 10px; font-weight: bold; cursor: pointer; font-size: 1.1rem; }
-
-        /* Login & Admin */
-        .login-overlay { display: none; position: fixed; top:0; left:0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 3000; justify-content: center; align-items: center; }
-        .login-card { background: white; padding: 40px; border-radius: 15px; width: 350px; text-align: center; }
-        .login-card input { width: 100%; padding: 12px; margin: 10px 0; border: 1px solid #ddd; border-radius: 8px; }
-        .admin-view { display: none; padding: 40px; background: white; min-height: 100vh; }
+        .cart-header { padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between; }
         
-        @media (max-width: 768px) {
-            .hero h1 { font-size: 2.2rem; }
-            .cart-sidebar { width: 100%; right: -100%; }
-        }
+        /* Responsividade */
+        @media (max-width: 768px) { .cart-sidebar { width: 100%; right: -100%; } .hero h1 { font-size: 1.8rem; } }
     </style>
 </head>
 <body>
 
-    <div id="main-ui">
-        <nav class="navbar">
-            <div class="nav-content">
-                <div class="logo">Dev<span>Burger</span></div>
-                <div class="nav-actions">
-                    <button class="btn-admin-access" onclick="openLogin()">Painel ADM</button>
-                    <div class="cart-btn" onclick="toggleCart()">
-                        <i class="fa-solid fa-cart-shopping"></i>
-                        <span id="cart-count">0</span>
-                    </div>
+    <nav class="navbar">
+        <div class="nav-content">
+            <div class="logo" onclick="window.location.reload()">Dev<span>Burger</span></div>
+            <div class="nav-actions">
+                <button class="btn-admin" onclick="openLogin()">ADM</button>
+                <div onclick="toggleCart()" style="cursor:pointer; position:relative;">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem;">0</span>
                 </div>
             </div>
-        </nav>
-
-        <section class="hero">
-            <div class="hero-content">
-                <h1>Sabor que vem do <span>Coração</span></h1>
-                <p>Hambúrgueres artesanais e entrega ultra rápida.</p>
-            </div>
-        </section>
-
-        <main class="container">
-            <h2 class="category-title">Burgers Premium</h2>
-            <div class="products-grid">
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&q=80" alt="Master Bacon">
-                    <div class="card-info">
-                        <h3>Master Bacon Cheese</h3>
-                        <p>Pão brioche, carne 200g, bacon crocante e muito cheddar.</p>
-                        <span class="price">R$ 42.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Master Bacon Cheese', 42.00)">Adicionar</button>
-                    </div>
-                </div>
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1594212699903-ec8a3eca50f5?w=600&q=80" alt="Smash">
-                    <div class="card-info">
-                        <h3>Duplo Smash BBQ</h3>
-                        <p>Duas carnes smash, cebola caramelizada e molho BBQ da casa.</p>
-                        <span class="price">R$ 38.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Duplo Smash BBQ', 38.00)">Adicionar</button>
-                    </div>
-                </div>
-            </div>
-
-            <h2 class="category-title">Acompanhamentos</h2>
-            <div class="products-grid">
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1630384066252-19e1ed95536a?w=600&q=80" alt="Batata">
-                    <div class="card-info">
-                        <h3>Batata Rústica</h3>
-                        <p>Batatas cortadas à mão com alecrim e páprica defumada.</p>
-                        <span class="price">R$ 22.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Batata Rústica', 22.00)">Adicionar</button>
-                    </div>
-                </div>
-            </div>
-
-            <h2 class="category-title">Bebidas</h2>
-            <div class="products-grid">
-                <div class="card">
-                    <img src="https://images.unsplash.com/photo-1622483767028-3f66f32aef97?w=600&q=80" alt="Coca">
-                    <div class="card-info">
-                        <h3>Coca-Cola Lata</h3>
-                        <p>Geladinha, 350ml (Original ou Zero).</p>
-                        <span class="price">R$ 7.00</span>
-                        <button class="add-to-cart" onclick="addToCart('Coca-Cola Lata', 7.00)">Adicionar</button>
-                    </div>
-                </div>
-            </div>
-        </main>
-
-        <section class="location-section" id="contato">
-            <div class="location-content">
-                <div class="location-text">
-                    <h2>Onde Estamos</h2>
-                    <p><i class="fa-solid fa-location-dot"></i> Av. Principal da Gastronomia, 450 - Centro</p>
-                    <p><i class="fa-solid fa-clock"></i> Aberto: Terça a Domingo (18:00 - 23:30)</p>
-                    <p><i class="fa-solid fa-motorcycle"></i> Entregamos em toda a cidade!</p>
-                    <a href="https://maps.google.com" target="_blank" class="btn-maps">Ver no Google Maps</a>
-                </div>
-                <div class="map-placeholder">
-                    <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800&q=80" alt="Mapa">
-                </div>
-            </div>
-        </section>
-    </div>
-
-    <div id="admin-ui" class="admin-view">
-        <div style="display: flex; justify-content: space-between; align-items: center; max-width: 1200px; margin: 0 auto;">
-            <h1>Dashboard Administrativo</h1>
-            <button onclick="logout()" style="padding: 10px 25px; background: #ff4d4d; color: white; border: none; border-radius: 8px; cursor: pointer;">Sair do Painel</button>
         </div>
-        <div class="container" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 30px;">
-            <div style="background: #e1f5fe; padding: 30px; border-radius: 15px; border-left: 8px solid #03a9f4;">
-                <p>Vendas Hoje</p>
-                <h2 style="font-size: 2rem;">R$ 1.480,00</h2>
-            </div>
-            <div style="background: #fff3e0; padding: 30px; border-radius: 15px; border-left: 8px solid #ff9800;">
-                <p>Pedidos Pendentes</p>
-                <h2 style="font-size: 2rem;">7</h2>
-            </div>
-            <div style="background: #e8f5e9; padding: 30px; border-radius: 15px; border-left: 8px solid #4caf50;">
-                <p>Ticket Médio</p>
-                <h2 style="font-size: 2rem;">R$ 58,00</h2>
-            </div>
+    </nav>
+
+    <div class="category-nav">
+        <div class="category-container">
+            <button class="tab-btn active" onclick="filterMenu('lanches', this)">🍔 Lanches</button>
+            <button class="tab-btn" onclick="filterMenu('almoco', this)">🍱 Almoço</button>
+            <button class="tab-btn" onclick="filterMenu('jantar', this)">🍝 Jantar</button>
+            <button class="tab-btn vip-tab" onclick="filterMenu('vip', this)">⭐ Área VIP</button>
         </div>
     </div>
 
-    <div id="login-overlay" class="login-overlay">
-        <div class="login-card">
-            <h2 style="margin-bottom: 10px;">Acesso Restrito</h2>
-            <p style="color: #666; margin-bottom: 20px;">Entre com suas credenciais</p>
-            <input type="text" id="user" placeholder="Usuário (admin)">
-            <input type="password" id="pass" placeholder="Senha (admin)">
-            <button onclick="handleLogin()" style="width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 10px;">Entrar</button>
-            <p onclick="closeLogin()" style="margin-top: 15px; cursor: pointer; font-size: 0.9rem; color: #999;">Voltar ao site</p>
+    <section class="hero">
+        <div>
+            <h1 id="hero-title">Cardápio de <span>Lanches</span></h1>
+            <p>Os melhores sabores para o seu momento.</p>
         </div>
-    </div>
+    </section>
+
+    <main class="container">
+        <div class="products-grid" id="menu-grid">
+            
+            <div class="card lanches show">
+                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500">
+                <div class="card-info">
+                    <h3>Master Bacon</h3>
+                    <p>Carne 200g, bacon extra e muito cheddar.</p>
+                    <span class="price">R$ 42.00</span>
+                    <button class="btn-add" onclick="addToCart('Master Bacon', 42.00)">Adicionar</button>
+                </div>
+            </div>
+
+            <div class="card almoco">
+                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500">
+                <div class="card-info">
+                    <h3>Executivo de Picanha</h3>
+                    <p>Picanha fatiada, arroz, feijão, fritas e farofa.</p>
+                    <span class="price">R$ 55.00</span>
+                    <button class="btn-add" onclick="addToCart('Executivo de Picanha', 55.00)">Adicionar</button>
+                </div>
+            </div>
+
+            <div class="card jantar">
+                <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500">
+                <div class="card-info">
+                    <h3>Fettuccine Alfredo</h3>
+                    <p>Massa artesanal ao molho branco e parmesão premium.</p>
+                    <span class="price">R$ 48.00</span>
+                    <button class="btn-add" onclick="addToCart('Fettuccine Alfredo', 48.00)">Adicionar</button>
+                </div>
+            </div>
+
+            <div class="card vip vip-item">
+                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500">
+                <div class="card-info">
+                    <span class="vip-badge">EXCLUSIVO VIP</span>
+                    <h3>Wagyu Gold Steak</h3>
+                    <p>Corte japonês A5 com manteiga de trufas negras.</p>
+                    <span class="price">R$ 240.00</span>
+                    <button class="btn-add" style="background: var(--vip);" onclick="addToCart('Wagyu Gold Steak', 240.00)">Adicionar ao Pedido</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
 
     <div id="cart-sidebar" class="cart-sidebar">
         <div class="cart-header">
             <h3>Seu Pedido</h3>
-            <span onclick="toggleCart()" class="close-cart">&times;</span>
+            <span onclick="toggleCart()" style="cursor:pointer; font-size:1.5rem;">&times;</span>
         </div>
-        <div id="cart-items" class="cart-items-list">
+        <div id="cart-items" style="flex:1; overflow-y:auto; padding:20px;"></div>
+        <div style="padding:20px; border-top:1px solid #eee;">
+            <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:15px;">
+                <span>Total:</span> <span id="cart-total">R$ 0.00</span>
             </div>
-        <div class="cart-footer">
-            <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 1.2rem; margin-bottom: 20px;">
-                <span>Total:</span>
-                <span id="cart-total">R$ 0.00</span>
-            </div>
-            <button class="btn-checkout" onclick="checkout()">
-                <i class="fa-brands fa-whatsapp"></i> Finalizar via WhatsApp
-            </button>
+            <button class="btn-add" style="background: var(--success);" onclick="checkout()">Finalizar no WhatsApp</button>
+        </div>
+    </div>
+
+    <div id="login-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; justify-content:center; align-items:center;">
+        <div style="background:white; padding:30px; border-radius:10px; width:300px; text-align:center;">
+            <h3>Acesso ADM</h3><br>
+            <input type="text" placeholder="Usuário" style="width:100%; padding:10px; margin-bottom:10px;">
+            <input type="password" placeholder="Senha" style="width:100%; padding:10px; margin-bottom:20px;">
+            <button onclick="alert('Demo Admin Ativa!')" style="width:100%; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px;">Entrar</button>
+            <p onclick="closeLogin()" style="margin-top:15px; cursor:pointer; font-size:0.8rem;">Voltar</p>
         </div>
     </div>
 
     <script>
         let cart = [];
-        let total = 0;
+        
+        function filterMenu(category, btn) {
+            // Atualiza botões
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
 
-        function toggleCart() {
-            document.getElementById('cart-sidebar').classList.toggle('active');
+            // Filtra itens
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                if(card.classList.contains(category)) {
+                    card.classList.add('show');
+                } else {
+                    card.classList.remove('show');
+                }
+            });
+
+            // Atualiza título do Hero
+            const titles = { lanches: 'Lanches', almoco: 'Almoço', jantar: 'Jantar', vip: 'Área VIP' };
+            document.getElementById('hero-title').innerHTML = `Cardápio de <span>${titles[category]}</span>`;
         }
 
+        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('active'); }
+        function openLogin() { document.getElementById('login-modal').style.display = 'flex'; }
+        function closeLogin() { document.getElementById('login-modal').style.display = 'none'; }
+
         function addToCart(name, price) {
-            cart.push({ name, price });
+            cart.push({name, price});
             updateCart();
             if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
         }
 
         function updateCart() {
-            const cartItemsElement = document.getElementById('cart-items');
-            const cartCountElement = document.getElementById('cart-count');
-            const cartTotalElement = document.getElementById('cart-total');
-            cartItemsElement.innerHTML = '';
-            total = 0;
-
-            cart.forEach((item, index) => {
+            const list = document.getElementById('cart-items');
+            const totalEl = document.getElementById('cart-total');
+            list.innerHTML = '';
+            let total = 0;
+            cart.forEach(item => {
                 total += item.price;
-                cartItemsElement.innerHTML += `
-                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; padding: 10px; background: #f9f9f9; border-radius: 8px;">
-                        <div>
-                            <p style="font-weight: bold; margin: 0;">${item.name}</p>
-                            <p style="color: #2ecc71; margin: 0;">R$ ${item.price.toFixed(2)}</p>
-                        </div>
-                        <i class="fa-solid fa-trash" onclick="removeItem(${index})" style="color: #ff4d4d; cursor: pointer;"></i>
-                    </div>`;
+                list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>${item.name}</span><span>R$ ${item.price.toFixed(2)}</span></div>`;
             });
-            cartCountElement.innerText = cart.length;
-            cartTotalElement.innerText = `R$ ${total.toFixed(2)}`;
-        }
-
-        function removeItem(index) {
-            cart.splice(index, 1);
-            updateCart();
-        }
-
-        function openLogin() { document.getElementById('login-overlay').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('login-overlay').style.display = 'none'; }
-
-        function handleLogin() {
-            const u = document.getElementById('user').value;
-            const p = document.getElementById('pass').value;
-            if(u === 'admin' && p === 'admin') {
-                document.getElementById('main-ui').style.display = 'none';
-                document.getElementById('admin-ui').style.display = 'block';
-                closeLogin();
-            } else { alert("Usuário ou senha inválidos!"); }
-        }
-
-        function logout() {
-            document.getElementById('main-ui').style.display = 'block';
-            document.getElementById('admin-ui').style.display = 'none';
+            document.getElementById('cart-count').innerText = cart.length;
+            totalEl.innerText = `R$ ${total.toFixed(2)}`;
         }
 
         function checkout() {
-            if (cart.length === 0) return alert("Seu carrinho está vazio!");
-            const endereco = prompt("Qual o endereço de entrega?");
-            if (!endereco) return;
-
-            const fone = "5511999999999"; // Troque pelo seu número
-            const resumo = cart.map(item => `• ${item.name} (R$ ${item.price.toFixed(2)})`).join('\n');
-            const mensagem = encodeURIComponent(`🍔 *NOVO PEDIDO - DevBurger*\n\n${resumo}\n\n💰 *Total:* R$ ${total.toFixed(2)}\n📍 *Entrega em:* ${endereco}`);
-            
-            window.open(`https://wa.me/${fone}?text=${mensagem}`, '_blank');
-            cart = [];
-            updateCart();
-            toggleCart();
+            if(cart.length === 0) return alert("Carrinho vazio!");
+            const msg = encodeURIComponent(`🍔 *NOVO PEDIDO*\nTotal: ${document.getElementById('cart-total').innerText}\n\nPedido via: https://devburger-premium.vercel.app/`);
+            window.open(`https://wa.me/5511999999999?text=${msg}`);
         }
     </script>
 </body>
