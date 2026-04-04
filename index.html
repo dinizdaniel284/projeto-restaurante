@@ -1,228 +1,320 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>DevBurger | Premium Experience</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
-    <style>
-        :root { --primary: #ffc107; --dark: #121212; --success: #25d366; --gray: #f4f4f4; --vip: #d4af37; }
-        
-        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Segoe UI', sans-serif; }
-        body { background-color: var(--gray); color: #333; scroll-behavior: smooth; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sistema Inteligente de Pedidos | Demonstração</title>
 
-        /* Navbar */
-        .navbar { background: var(--dark); color: white; padding: 15px 0; position: sticky; top: 0; z-index: 1000; }
-        .nav-content { max-width: 1200px; margin: 0 auto; display: flex; justify-content: space-between; align-items: center; padding: 0 20px; }
-        .logo { font-size: 1.6rem; font-weight: bold; cursor: pointer; }
-        .logo span { color: var(--primary); }
-        
-        .nav-actions { display: flex; align-items: center; gap: 15px; }
-        .btn-admin { border: 1px solid var(--primary); color: var(--primary); padding: 5px 12px; border-radius: 20px; cursor: pointer; background: transparent; font-size: 0.8rem; }
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
 
-        /* Categorias (UX iFood) */
-        .category-nav { background: white; padding: 15px 0; position: sticky; top: 60px; z-index: 999; border-bottom: 1px solid #ddd; overflow-x: auto; white-space: nowrap; }
-        .category-container { max-width: 1200px; margin: 0 auto; display: flex; gap: 10px; padding: 0 20px; }
-        .tab-btn { padding: 10px 25px; border-radius: 25px; border: 1px solid #ddd; background: white; cursor: pointer; font-weight: 600; transition: 0.3s; }
-        .tab-btn.active { background: var(--dark); color: white; border-color: var(--dark); }
-        .tab-btn.vip-tab { border-color: var(--vip); color: var(--vip); }
-        .tab-btn.vip-tab.active { background: var(--vip); color: white; }
+<style>
+:root {
+--primary: #ffc107;
+--dark: #0f0f0f;
+--success: #25d366;
+--gray: #f5f5f5;
+}
 
-        /* Hero */
-        .hero { height: 300px; background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1514362545857-3bc16c4c7d1b?w=1200'); background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; }
+* {
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+font-family: 'Segoe UI', sans-serif;
+}
 
-        /* Grid e Cards */
-        .container { max-width: 1200px; margin: 30px auto; padding: 0 20px; }
-        .products-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
-        .card { background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 4px 10px rgba(0,0,0,0.05); transition: 0.3s; display: none; }
-        .card.show { display: flex; flex-direction: column; }
-        .card img { width: 100%; height: 200px; object-fit: cover; }
-        .card-info { padding: 20px; flex-grow: 1; }
-        
-        .card.vip-item { border: 2px solid var(--vip); }
-        .vip-badge { background: var(--vip); color: white; padding: 3px 10px; border-radius: 5px; font-size: 0.7rem; font-weight: bold; margin-bottom: 5px; display: inline-block; }
+body {
+background: var(--gray);
+}
 
-        .price { font-size: 1.3rem; font-weight: bold; color: #2ecc71; margin: 10px 0; display: block; }
-        .btn-add { width: 100%; padding: 12px; background: var(--dark); color: white; border: none; border-radius: 8px; cursor: pointer; font-weight: bold; }
+/* NAVBAR */
+.navbar {
+background: var(--dark);
+color: white;
+padding: 15px;
+position: sticky;
+top: 0;
+z-index: 1000;
+}
 
-        /* Localização Section */
-        .location-section { background: var(--dark); color: white; padding: 60px 20px; margin-top: 50px; }
-        .location-content { max-width: 1200px; margin: 0 auto; display: flex; flex-wrap: wrap; gap: 40px; align-items: center; }
-        .location-text { flex: 1; min-width: 300px; }
-        .location-text h2 { color: var(--primary); font-size: 2rem; margin-bottom: 20px; }
-        .location-text p { margin-bottom: 10px; display: flex; align-items: center; gap: 10px; }
-        .btn-maps { display: inline-block; margin-top: 15px; background: var(--primary); color: black; padding: 10px 20px; border-radius: 5px; text-decoration: none; font-weight: bold; }
+.nav-content {
+max-width: 1200px;
+margin: auto;
+display: flex;
+justify-content: space-between;
+}
 
-        .map-placeholder { flex: 1; min-width: 300px; height: 300px; border-radius: 15px; overflow: hidden; }
-        .map-placeholder img { width: 100%; height: 100%; object-fit: cover; opacity: 0.6; }
+.logo {
+font-weight: bold;
+font-size: 1.4rem;
+}
 
-        /* Sidebar Cart */
-        .cart-sidebar { position: fixed; right: -400px; top: 0; width: 380px; height: 100%; background: white; z-index: 2000; transition: 0.4s; box-shadow: -5px 0 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; }
-        .cart-sidebar.active { right: 0; }
-        .cart-header { padding: 20px; background: var(--dark); color: white; display: flex; justify-content: space-between; }
-        
-        @media (max-width: 768px) { .cart-sidebar { width: 100%; right: -100%; } }
-    </style>
+.logo span {
+color: var(--primary);
+}
+
+/* HERO */
+.hero {
+height: 320px;
+background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)),
+url('https://images.unsplash.com/photo-1550547660-d9450f859349?w=1200');
+background-size: cover;
+display: flex;
+align-items: center;
+justify-content: center;
+text-align: center;
+color: white;
+padding: 20px;
+}
+
+.hero h1 {
+font-size: 2rem;
+margin-bottom: 10px;
+}
+
+.hero p {
+opacity: 0.9;
+}
+
+.hero button {
+margin-top: 20px;
+padding: 12px 20px;
+border: none;
+background: var(--primary);
+font-weight: bold;
+border-radius: 6px;
+cursor: pointer;
+}
+
+/* BENEFICIOS */
+.benefits {
+padding: 50px 20px;
+text-align: center;
+}
+
+.benefits h2 {
+margin-bottom: 20px;
+}
+
+.benefit-grid {
+display: flex;
+flex-wrap: wrap;
+gap: 20px;
+justify-content: center;
+}
+
+.benefit {
+background: white;
+padding: 20px;
+border-radius: 10px;
+width: 220px;
+box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+}
+
+/* PRODUTOS */
+.container {
+max-width: 1200px;
+margin: 30px auto;
+padding: 0 20px;
+}
+
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+gap: 20px;
+}
+
+.card {
+background: white;
+border-radius: 12px;
+overflow: hidden;
+box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+}
+
+.card img {
+width: 100%;
+height: 180px;
+object-fit: cover;
+}
+
+.card-info {
+padding: 15px;
+}
+
+.price {
+color: green;
+font-weight: bold;
+margin: 10px 0;
+display: block;
+}
+
+.btn {
+width: 100%;
+padding: 10px;
+border: none;
+background: var(--dark);
+color: white;
+border-radius: 6px;
+cursor: pointer;
+}
+
+/* MAPA */
+.map-section {
+padding: 50px 20px;
+background: var(--dark);
+color: white;
+text-align: center;
+}
+
+iframe {
+width: 100%;
+height: 300px;
+border-radius: 10px;
+margin-top: 20px;
+}
+
+/* CART */
+.cart {
+position: fixed;
+right: 20px;
+bottom: 20px;
+background: var(--success);
+color: white;
+padding: 15px;
+border-radius: 50%;
+cursor: pointer;
+}
+
+.cart-box {
+position: fixed;
+right: -350px;
+top: 0;
+width: 300px;
+height: 100%;
+background: white;
+transition: 0.4s;
+padding: 20px;
+}
+
+.cart-box.active {
+right: 0;
+}
+</style>
 </head>
+
 <body>
 
-    <nav class="navbar">
-        <div class="nav-content">
-            <div class="logo" onclick="window.location.reload()">Dev<span>Burger</span></div>
-            <div class="nav-actions">
-                <button class="btn-admin" onclick="openLogin()">ADM</button>
-                <div onclick="toggleCart()" style="cursor:pointer; position:relative;">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    <span id="cart-count" style="position:absolute; top:-10px; right:-10px; background:red; color:white; border-radius:50%; padding:2px 6px; font-size:0.7rem;">0</span>
-                </div>
-            </div>
-        </div>
-    </nav>
+<nav class="navbar">
+<div class="nav-content">
+<div class="logo">Sistema<span>Pedidos IA</span></div>
+<div onclick="toggleCart()" style="cursor:pointer;">
+<i class="fa fa-shopping-cart"></i>
+<span id="count">0</span>
+</div>
+</div>
+</nav>
 
-    <div class="category-nav">
-        <div class="category-container">
-            <button class="tab-btn active" onclick="filterMenu('lanches', this)">🍔 Lanches</button>
-            <button class="tab-btn" onclick="filterMenu('almoco', this)">🍱 Almoço</button>
-            <button class="tab-btn" onclick="filterMenu('jantar', this)">🍝 Jantar</button>
-            <button class="tab-btn vip-tab" onclick="filterMenu('vip', this)">⭐ Área VIP</button>
-        </div>
-    </div>
+<section class="hero">
+<div>
+<h1>Venda mais todos os dias com pedidos automáticos no WhatsApp</h1>
+<p>Seu restaurante atendendo clientes 24h sem depender de funcionários.</p>
+<button onclick="scrollToMenu()">Ver demonstração</button>
+</div>
+</section>
 
-    <section class="hero">
-        <div>
-            <h1 id="hero-title">Cardápio de <span>Lanches</span></h1>
-            <p>Os melhores sabores para o seu momento.</p>
-        </div>
-    </section>
+<section class="benefits">
+<h2>🚀 Aumente seu faturamento com IA</h2>
+<div class="benefit-grid">
+<div class="benefit">📈 Mais pedidos automaticamente</div>
+<div class="benefit">⏱ Atendimento 24h</div>
+<div class="benefit">💸 Redução de erros</div>
+<div class="benefit">🚀 Mais conversão</div>
+</div>
+</section>
 
-    <main class="container">
-        <div class="products-grid" id="menu-grid">
-            <div class="card lanches show">
-                <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500">
-                <div class="card-info">
-                    <h3>Master Bacon</h3>
-                    <p>Carne 200g, bacon extra e muito cheddar.</p>
-                    <span class="price">R$ 42.00</span>
-                    <button class="btn-add" onclick="addToCart('Master Bacon', 42.00)">Adicionar</button>
-                </div>
-            </div>
+<main class="container" id="menu">
+<div class="grid">
 
-            <div class="card almoco">
-                <img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500">
-                <div class="card-info">
-                    <h3>Executivo de Picanha</h3>
-                    <p>Picanha fatiada, arroz, feijão e fritas.</p>
-                    <span class="price">R$ 55.00</span>
-                    <button class="btn-add" onclick="addToCart('Executivo de Picanha', 55.00)">Adicionar</button>
-                </div>
-            </div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=500">
+<div class="card-info">
+<h3>Master Bacon</h3>
+<span class="price">R$ 42</span>
+<button class="btn" onclick="add('Master Bacon',42)">Adicionar ao Pedido Inteligente</button>
+</div>
+</div>
 
-            <div class="card jantar">
-                <img src="https://images.unsplash.com/photo-1551183053-bf91a1d81141?w=500">
-                <div class="card-info">
-                    <h3>Fettuccine Alfredo</h3>
-                    <p>Massa artesanal ao molho branco.</p>
-                    <span class="price">R$ 48.00</span>
-                    <button class="btn-add" onclick="addToCart('Fettuccine Alfredo', 48.00)">Adicionar</button>
-                </div>
-            </div>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1550547660-d9450f859349?w=500">
+<div class="card-info">
+<h3>Smash Duplo</h3>
+<span class="price">R$ 38</span>
+<button class="btn" onclick="add('Smash Duplo',38)">Adicionar ao Pedido Inteligente</button>
+</div>
+</div>
 
-            <div class="card vip vip-item">
-                <img src="https://images.unsplash.com/photo-1504674900247-0877df9cc836?w=500">
-                <div class="card-info">
-                    <span class="vip-badge">EXCLUSIVO VIP</span>
-                    <h3>Wagyu Gold Steak</h3>
-                    <p>Corte japonês A5 trufado.</p>
-                    <span class="price">R$ 240.00</span>
-                    <button class="btn-add" style="background: var(--vip);" onclick="addToCart('Wagyu Gold Steak', 240.00)">Adicionar ao Pedido</button>
-                </div>
-            </div>
-        </div>
-    </main>
+<div class="card">
+<img src="https://images.unsplash.com/photo-1546069901-ba9599a7e63c?w=500">
+<div class="card-info">
+<h3>Executivo</h3>
+<span class="price">R$ 55</span>
+<button class="btn" onclick="add('Executivo',55)">Adicionar ao Pedido Inteligente</button>
+</div>
+</div>
 
-    <section class="location-section" id="contato">
-        <div class="location-content">
-            <div class="location-text">
-                <h2>Venha nos Visitar</h2>
-                <p><i class="fa-solid fa-location-dot" style="color: var(--primary);"></i> Av. Principal da Gastronomia, 450 - Centro</p>
-                <p><i class="fa-solid fa-clock" style="color: var(--primary);"></i> Terça a Domingo: 18h às 23:30h</p>
-                <p><i class="fa-solid fa-motorcycle" style="color: var(--primary);"></i> Entrega rápida em toda a região!</p>
-                <a href="https://maps.google.com" target="_blank" class="btn-maps">Ver no Google Maps</a>
-            </div>
-            <div class="map-placeholder">
-                <img src="https://images.unsplash.com/photo-1526778548025-fa2f459cd5c1?w=800" alt="Mapa">
-            </div>
-        </div>
-    </section>
+</div>
+</main>
 
-    <div id="cart-sidebar" class="cart-sidebar">
-        <div class="cart-header">
-            <h3>Seu Pedido</h3>
-            <span onclick="toggleCart()" style="cursor:pointer; font-size:1.5rem;">&times;</span>
-        </div>
-        <div id="cart-items" style="flex:1; overflow-y:auto; padding:20px;"></div>
-        <div style="padding:20px; border-top:1px solid #eee;">
-            <div style="display:flex; justify-content:space-between; font-weight:bold; margin-bottom:15px;">
-                <span>Total:</span> <span id="cart-total">R$ 0.00</span>
-            </div>
-            <button class="btn-add" style="background: var(--success);" onclick="checkout()">Finalizar no WhatsApp</button>
-        </div>
-    </div>
+<section class="map-section">
+<h2>📍 Localização Integrada</h2>
+<p>Mostre ao cliente onde seu restaurante está e facilite pedidos locais</p>
 
-    <div id="login-modal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.8); z-index:3000; justify-content:center; align-items:center;">
-        <div style="background:white; padding:30px; border-radius:10px; width:300px; text-align:center;">
-            <h3>Acesso ADM</h3><br>
-            <input type="text" placeholder="Usuário" style="width:100%; padding:10px; margin-bottom:10px;">
-            <input type="password" placeholder="Senha" style="width:100%; padding:10px; margin-bottom:20px;">
-            <button onclick="alert('Demo Admin Ativa!')" style="width:100%; padding:10px; background:var(--dark); color:white; border:none; border-radius:5px;">Entrar</button>
-            <p onclick="closeLogin()" style="margin-top:15px; cursor:pointer; font-size:0.8rem;">Voltar</p>
-        </div>
-    </div>
+<iframe src="https://www.google.com/maps?q=São+Paulo&output=embed"></iframe>
+</section>
 
-    <script>
-        let cart = [];
-        
-        function filterMenu(category, btn) {
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            btn.classList.add('active');
-            const cards = document.querySelectorAll('.card');
-            cards.forEach(card => {
-                card.classList.contains(category) ? card.classList.add('show') : card.classList.remove('show');
-            });
-            const titles = { lanches: 'Lanches', almoco: 'Almoço', jantar: 'Jantar', vip: 'Área VIP' };
-            document.getElementById('hero-title').innerHTML = `Cardápio de <span>${titles[category]}</span>`;
-        }
+<div class="cart" onclick="toggleCart()">🛒</div>
 
-        function toggleCart() { document.getElementById('cart-sidebar').classList.toggle('active'); }
-        function openLogin() { document.getElementById('login-modal').style.display = 'flex'; }
-        function closeLogin() { document.getElementById('login-modal').style.display = 'none'; }
+<div class="cart-box" id="cartBox">
+<h3>Seu Pedido</h3>
+<div id="items"></div>
+<p><strong>Total: R$ <span id="total">0</span></strong></p>
+<button class="btn" style="background:green;" onclick="checkout()">Finalizar no WhatsApp</button>
+</div>
 
-        function addToCart(name, price) {
-            cart.push({name, price});
-            updateCart();
-            if(!document.getElementById('cart-sidebar').classList.contains('active')) toggleCart();
-        }
+<script>
+let cart = [];
 
-        function updateCart() {
-            const list = document.getElementById('cart-items');
-            const totalEl = document.getElementById('cart-total');
-            list.innerHTML = '';
-            let total = 0;
-            cart.forEach(item => {
-                total += item.price;
-                list.innerHTML += `<div style="display:flex; justify-content:space-between; margin-bottom:10px;"><span>${item.name}</span><span>R$ ${item.price.toFixed(2)}</span></div>`;
-            });
-            document.getElementById('cart-count').innerText = cart.length;
-            totalEl.innerText = `R$ ${total.toFixed(2)}`;
-        }
+function add(name, price){
+cart.push({name,price});
+render();
+}
 
-        function checkout() {
-            if(cart.length === 0) return alert("Carrinho vazio!");
-            const linkSite = "https://devburger-premium.vercel.app/";
-            const msg = encodeURIComponent(`🍔 *NOVO PEDIDO*\nTotal: ${document.getElementById('cart-total').innerText}\n\n💻 Pedido via: ${linkSite}`);
-            window.open(`https://wa.me/5511999999999?text=${msg}`);
-        }
-    </script>
+function render(){
+let html = '';
+let total = 0;
+
+cart.forEach(i=>{
+total += i.price;
+html += `<p>${i.name} - R$ ${i.price}</p>`;
+});
+
+document.getElementById('items').innerHTML = html;
+document.getElementById('total').innerText = total;
+document.getElementById('count').innerText = cart.length;
+}
+
+function toggleCart(){
+document.getElementById('cartBox').classList.toggle('active');
+}
+
+function checkout(){
+let text = cart.map(i=>i.name).join(', ');
+window.open(`https://wa.me/5511999999999?text=Pedido automático: ${text}`);
+}
+
+function scrollToMenu(){
+document.getElementById('menu').scrollIntoView({behavior:'smooth'});
+}
+</script>
+
 </body>
-    </html>
-            
+</html>
