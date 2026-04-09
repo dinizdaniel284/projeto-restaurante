@@ -107,6 +107,27 @@ background:linear-gradient(45deg,#ffc107,#ff9800);
 color:black;
 }
 
+/* MAPA */
+.map-section{
+padding:60px 20px;
+background:#0f0f0f;
+color:white;
+text-align:center;
+}
+.map-box{
+max-width:900px;
+margin:20px auto;
+border-radius:15px;
+overflow:hidden;
+border:4px solid var(--primary);
+box-shadow:0 10px 25px rgba(0,0,0,0.2);
+}
+iframe{
+width:100%;
+height:350px;
+border:none;
+}
+
 /* CART */
 .cart-float{
 position:fixed;
@@ -190,6 +211,16 @@ cursor:pointer;
 <main class="container" id="menu">  
 <div class="grid" id="productGrid"></div>  
 </main>  
+
+<!-- MAPA (CORRIGIDO E MANTIDO) -->
+<section class="map-section">  
+<h2>📍 Nossa Localização</h2>  
+<p>Atendendo toda a região de Santa Rita do Passa Quatro</p>  
+
+<div class="map-box">
+<iframe src="https://www.google.com/maps?q=Santa+Rita+do+Passa+Quatro&output=embed"></iframe>
+</div>
+</section>
 
 <div class="cart-float" onclick="toggleCart()">🛒</div>  
 
